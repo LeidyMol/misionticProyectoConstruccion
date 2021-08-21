@@ -1,0 +1,301 @@
+/*
+ * Pueda usar esta plantilla para la carga del reto a iMaster
+ * Copie las clases de los paquetes Modelo, Vista, Controlador y Util
+ * No incluya los import de los archivos .java solo las clases
+ */
+// Importaciones necesarias en iMaster
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+// Util (No modificar)
+class JDBCUtilities {
+    private static final String DATABASE_LOCATION = "ProyectosConstruccion.db";
+
+    public static Connection getConnection() throws SQLException {
+        String url = "jdbc:sqlite:"+DATABASE_LOCATION;
+
+        return DriverManager.getConnection(url);
+    }
+}
+
+// Remplace en adelante por las clases de sus archivos .java
+
+// Vista
+class VistaRequerimientos {}
+
+// Controlador
+class ControladorRequerimientos {}
+
+// Modelo
+// VO
+class Requerimiento_1 {}
+
+class Requerimiento_2 {}
+
+class Requerimiento_3 {}
+
+// DAO
+class Requerimiento_1Dao {}
+
+class Requerimiento_2Dao {}
+
+class Requerimiento_3Dao {}
+
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.text.DecimalFormat;
+// Util (No modificar)
+class JDBCUtilities {
+    private static final String DATABASE_LOCATION = "ProyectosConstruccion.db";
+
+    public static Connection getConnection() throws SQLException {
+        String url = "jdbc:sqlite:"+DATABASE_LOCATION;
+
+        return DriverManager.getConnection(url);
+    }
+}
+
+public class VistaRequerimientosReto4 {
+
+    public static final ControladorRequerimientos controlador = new ControladorRequerimientos();
+
+    public static void requerimiento1() {
+        System.out.println("Conocer el nombre, apellidos y salarios de los lideres cuyo segundo apellido sea 'Ortiz'");
+        System.out.println("Nombre Primer_apellido Segundo_apellido Salario");
+
+        try {
+            ArrayList<Lider> resultado = controlador.consultarRequerimiento1();
+            for (Lider lider : resultado) {
+                System.out.print(lider.getNombre() + " ");
+                System.out.print(lider.getPrimer_Apellido() + " ");
+                System.out.print(lider.getSegundo_Apellido() + " ");
+                System.out.println(lider.getSalario());
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+
+    public static void requerimiento2() {
+        System.out.println(
+                "Transformar y obtener el nombre de los lideres donde la primera letra sea en minúscula y las demás en mayúscula");
+        System.out.println("Nombre");
+
+        try {
+            ArrayList<String> resultado = controlador.consultarRequerimiento2();
+            for (String nombre : resultado) {
+                System.out.println(nombre);
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+
+    public static void requerimiento3() {
+        System.out.println("Saber la suma de los salarios de todos los lideres por su ciudad de residencia");
+        System.out.println("Cargo Salario");
+        try {
+            ArrayList<PromedioSalario> resultado = controlador.consultarRequerimiento3();
+            for (PromedioSalario promedioSalario : resultado) {
+                System.out.print(promedioSalario.getCargo() + " ");
+                DecimalFormat df = new DecimalFormat(".000000");
+                System.out.println(df.format(promedioSalario.getSalarioPromedio()));
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+
+}
+
+public class ControladorRequerimientos {
+
+    LiderDao liderDao = new LiderDao();
+    Requerimiento_2Dao requerimiento_2Dao = new Requerimiento_2Dao();
+    Requerimiento_3Dao requerimiento_3Dao = new Requerimiento_3Dao();
+
+    public ArrayList<Lider> consultarRequerimiento1() throws SQLException {
+        return liderDao.requerimiento1();
+    }
+
+    public ArrayList<String> consultarRequerimiento2() throws SQLException {
+        return requerimiento_2Dao.requerimiento2();
+    }
+
+    public ArrayList<PromedioSalario> consultarRequerimiento3() throws SQLException {
+        return requerimiento_3Dao.requerimiento3();
+    }
+
+}
+
+public class Lider {
+    private String Nombre;
+    private String Primer_Apellido;
+    private String Segundo_Apellido;
+    private float Salario;
+
+    public Lider() {
+
+    }
+
+    public String getNombre() {
+        return Nombre;
+    }
+
+    public void setNombre(String nombre) {
+        Nombre = nombre;
+
+    }
+
+    public String getPrimer_Apellido() {
+        return Primer_Apellido;
+    }
+
+    public void setPrimer_Apellido(String primer_Apellido) {
+        Primer_Apellido = primer_Apellido;
+
+    }
+
+    public String getSegundo_Apellido() {
+        return Segundo_Apellido;
+    }
+
+    public void setSegundo_Apellido(String segundo_Apellido) {
+        Segundo_Apellido = segundo_Apellido;
+
+    }
+
+    public float getSalario() {
+        return Salario;
+    }
+
+    public void setSalario(Float salario) {
+        Salario = salario;
+
+    }
+
+}
+
+public class PromedioSalario {
+    private String cargo;
+    private double salarioPromedio;
+
+    public PromedioSalario() {
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
+
+    public double getSalarioPromedio() {
+        return salarioPromedio;
+    }
+
+    public void setSalarioPromedio(double salarioPromedio) {
+        this.salarioPromedio = salarioPromedio;
+    }
+}
+
+
+
+public class LiderDao {
+    Connection conexion;
+
+    public LiderDao() {
+        try {
+            conexion = JDBCUtilities.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<Lider> requerimiento1() throws SQLException {
+        ArrayList<Lider> lista = new ArrayList<>();
+        String sql = "Select Nombre, Primer_Apellido, Segundo_Apellido, Salario from Lider where Segundo_Apellido = 'Ortiz'";
+        Statement pstm = conexion.createStatement();
+        ResultSet resultados = pstm.executeQuery(sql);
+        while (resultados.next()) {
+            Lider lider = new Lider();
+            lider.setNombre(resultados.getString("Nombre"));
+            lider.setPrimer_Apellido(resultados.getString("Primer_Apellido"));
+            lider.setSegundo_Apellido(resultados.getString("Segundo_Apellido"));
+            lider.setSalario(resultados.getFloat("Salario"));
+            lista.add(lider);
+        }
+
+        conexion.close();
+
+        return lista;
+    }
+
+}
+
+public class Requerimiento_2Dao {
+    Connection conexion;
+
+    public Requerimiento_2Dao() {
+        try {
+            conexion = JDBCUtilities.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<String> requerimiento2() throws SQLException {
+        ArrayList<String> nombresLider = new ArrayList<>();
+        String sql = "Select LOWER(SUBSTR(Nombre,1,1)) || UPPER(SUBSTR(Nombre,2,LENGTH(Nombre))) as NOMBRES_LIDER from Lider l";
+        Statement pstm = conexion.createStatement();
+        ResultSet resultados = pstm.executeQuery(sql);
+        while (resultados.next()) {
+            nombresLider.add(resultados.getString("NOMBRES_LIDER"));
+        }
+
+        conexion.close();
+
+        return nombresLider;
+    }
+}
+
+public class Requerimiento_3Dao {
+    Connection conexion;
+
+    public Requerimiento_3Dao() {
+        try {
+            conexion = JDBCUtilities.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<PromedioSalario> requerimiento3() throws SQLException {
+        ArrayList<PromedioSalario> lista = new ArrayList<>();
+        String sql = "select Cargo, avg(Salario) as Salario from Lider lider group by Cargo HAVING avg(Salario) > 500000";
+        Statement pstm = conexion.createStatement();
+        ResultSet resultados = pstm.executeQuery(sql);
+        while (resultados.next()) {
+            PromedioSalario promedioSalario = new PromedioSalario();
+            promedioSalario.setCargo(resultados.getString("Cargo"));
+            promedioSalario.setSalarioPromedio(resultados.getDouble("Salario"));
+            lista.add(promedioSalario);
+        }
+
+        conexion.close();
+
+        return lista;
+
+    }
+}
